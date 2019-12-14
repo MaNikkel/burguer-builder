@@ -23,7 +23,7 @@ const orderSummary = props => {
       <Button btnType="Danger" clicked={props.cancelButton}>
         CANCELAR
       </Button>
-      <Button btnType="Success" clicked={() => alert("yaaay")}>
+      <Button btnType="Success" clicked={props.continueButton}>
         CONTINUAR
       </Button>
     </Aux>
