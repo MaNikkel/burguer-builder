@@ -73,22 +73,23 @@ class BurguerBuilder extends Component {
   };
 
   handleContinue = () => {
-    this.setState({ loading: true });
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: "Mathias Nikkel",
-      adress: {
-        street: "olhaaa"
-      }
-    };
-    axios
-      .post("/orders.json", order)
-      .then(response => console.log(response))
-      .catch(err => console.log(err))
-      .finally(() => {
-        this.setState({ loading: false, purchaseMode: false });
-      });
+    // coloca todos os ingredientes em um array
+    const queryParams = [];
+    for (let i in this.state.ingredients) {
+      // coloca todos os ingredientes de forma entendível na url
+      queryParams.push(
+        encodeURIComponent(i) +
+          "=" +
+          encodeURIComponent(this.state.ingredients[i])
+      );
+    }
+    queryParams.push("price=" + this.state.totalPrice);
+    // formata da forma que o browser entende os query params em uma string
+    const queryString = queryParams.join("&");
+    this.props.history.push({
+      pathname: "/checkout",
+      search: "?" + queryString
+    });
   };
 
   removeIngredientHandler = type => {
