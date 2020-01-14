@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import axios from "../../../axios-orders";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Button from "../../../components/UI/Button/Button";
@@ -92,13 +93,6 @@ class Contact extends React.Component {
     formIsValid: false,
     loading: false
   };
-  componentDidMount() {
-    console.log(this.props);
-    this.setState({
-      ingredients: this.props.ingredients,
-      totalPrice: this.props.price
-    });
-  }
 
   checkValidity = (value, rules) => {
     let isValid = true;
@@ -192,4 +186,9 @@ class Contact extends React.Component {
   }
 }
 
-export default withRouter(Contact);
+const mapStateToProps = state => ({
+  ingredients: state.ingredients,
+  price: state.totalPrice
+});
+
+export default connect(mapStateToProps)(withRouter(Contact));
