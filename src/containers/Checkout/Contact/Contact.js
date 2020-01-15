@@ -6,6 +6,8 @@ import Spinner from "../../../components/UI/Spinner/Spinner";
 import Button from "../../../components/UI/Button/Button";
 import Input from "../../../components/UI/Input/Input";
 import classes from "./Contact.module.css";
+import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
+import * as orderActions from "../../../store/actions";
 
 class Contact extends React.Component {
   state = {
@@ -120,13 +122,7 @@ class Contact extends React.Component {
       price: this.props.price,
       orderData: formData
     };
-    axios
-      .post("/orders.json", order)
-      .then(response => this.props.history.push("/"))
-      .catch(err => console.log(err))
-      .finally(() => {
-        this.setState({ loading: false });
-      });
+    this.props.onOrderBurguer(order);
   };
 
   inputChangedHandler = (event, inputKey) => {
@@ -174,7 +170,7 @@ class Contact extends React.Component {
         </Button>
       </form>
     );
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
     return (
@@ -187,8 +183,16 @@ class Contact extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  ingredients: state.ingredients,
-  price: state.totalPrice
+  ingredients: state.burguerBuilder.ingredients,
+  price: state.burguerBuilder.totalPrice,
+  loading: state.order.loading
 });
 
-export default connect(mapStateToProps)(withRouter(Contact));
+const mapDispatchToProps = dispatch => ({
+  onOrderBurguer: orderData => dispatch(orderActions.purchaseBurguer(orderData))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(withErrorHandler(Contact, axios)));
