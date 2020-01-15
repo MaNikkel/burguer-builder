@@ -1,10 +1,13 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import axios from "../../../axios-orders";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Button from "../../../components/UI/Button/Button";
 import Input from "../../../components/UI/Input/Input";
 import classes from "./Contact.module.css";
+import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
+import * as orderActions from "../../../store/actions";
 
 class Contact extends React.Component {
   state = {
@@ -92,13 +95,6 @@ class Contact extends React.Component {
     formIsValid: false,
     loading: false
   };
-  componentDidMount() {
-    console.log(this.props);
-    this.setState({
-      ingredients: this.props.ingredients,
-      totalPrice: this.props.price
-    });
-  }
 
   checkValidity = (value, rules) => {
     let isValid = true;
@@ -126,13 +122,7 @@ class Contact extends React.Component {
       price: this.props.price,
       orderData: formData
     };
-    axios
-      .post("/orders.json", order)
-      .then(response => this.props.history.push("/"))
-      .catch(err => console.log(err))
-      .finally(() => {
-        this.setState({ loading: false });
-      });
+    this.props.onOrderBurguer(order);
   };
 
   inputChangedHandler = (event, inputKey) => {
@@ -180,7 +170,7 @@ class Contact extends React.Component {
         </Button>
       </form>
     );
-    if (this.state.loading) {
+    if (this.props.loading) {
       form = <Spinner />;
     }
     return (
@@ -192,4 +182,17 @@ class Contact extends React.Component {
   }
 }
 
-export default withRouter(Contact);
+const mapStateToProps = state => ({
+  ingredients: state.burguerBuilder.ingredients,
+  price: state.burguerBuilder.totalPrice,
+  loading: state.order.loading
+});
+
+const mapDispatchToProps = dispatch => ({
+  onOrderBurguer: orderData => dispatch(orderActions.purchaseBurguer(orderData))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(withErrorHandler(Contact, axios)));
