@@ -120,9 +120,10 @@ class Contact extends React.Component {
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.price,
-      orderData: formData
+      orderData: formData,
+      userId: this.props.userId
     };
-    this.props.onOrderBurguer(order);
+    this.props.onOrderBurguer(order, this.props.token);
   };
 
   inputChangedHandler = (event, inputKey) => {
@@ -185,11 +186,14 @@ class Contact extends React.Component {
 const mapStateToProps = state => ({
   ingredients: state.burguerBuilder.ingredients,
   price: state.burguerBuilder.totalPrice,
-  loading: state.order.loading
+  loading: state.order.loading,
+  token: state.auth.token,
+  userId: state.auth.userId
 });
 
 const mapDispatchToProps = dispatch => ({
-  onOrderBurguer: orderData => dispatch(orderActions.purchaseBurguer(orderData))
+  onOrderBurguer: (orderData, token) =>
+    dispatch(orderActions.purchaseBurguer(orderData, token))
 });
 
 export default connect(

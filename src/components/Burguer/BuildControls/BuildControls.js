@@ -25,13 +25,19 @@ const buildControls = props => {
         Price: <strong>{props.totalPrice.toFixed(2)}</strong>
       </p>
       {controlsMap}
-      <button
-        className={classes.OrderButton}
-        disabled={props.purchasable}
-        onClick={props.handlePurchase}
-      >
-        Order Now
-      </button>
+      {props.isAuth ? (
+        <button
+          className={classes.OrderButton}
+          disabled={props.purchasable}
+          onClick={props.handlePurchase}
+        >
+          Order Now
+        </button>
+      ) : (
+        <button className={classes.OrderButton} onClick={props.handleSignIn}>
+          Sign Up Now!
+        </button>
+      )}
     </div>
   );
 };

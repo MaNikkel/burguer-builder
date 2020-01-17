@@ -41,6 +41,12 @@ class BurguerBuilder extends Component {
     });
   };
 
+  handleSignIn = () => {
+    this.props.history.push({
+      pathname: "/auth"
+    });
+  };
+
   render() {
     const disabledInfo = {
       ...this.props.ingredients
@@ -70,6 +76,8 @@ class BurguerBuilder extends Component {
             purchasable={!this.updatePurchaseState(this.props.ingredients)}
             disabled={disabledInfo}
             handlePurchase={this.handlePurchase}
+            handleSignIn={this.handleSignIn}
+            isAuth={this.props.isAuth}
           />
         </Aux>
       );
@@ -90,7 +98,8 @@ const mapStateToProps = state => {
   return {
     ingredients: state.burguerBuilder.ingredients,
     totalPrice: state.burguerBuilder.totalPrice,
-    error: state.burguerBuilder.error
+    error: state.burguerBuilder.error,
+    isAuth: state.auth.token !== null
   };
 };
 const mapDispatchToProps = dispatch => {
